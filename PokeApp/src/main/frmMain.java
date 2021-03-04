@@ -283,11 +283,12 @@ public class frmMain extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        //
+        
     }//GEN-LAST:event_formWindowOpened
 
     private void btnDeletrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletrearActionPerformed
-        //
+        Hilo dpokemon = new Hilo(2);
+        dpokemon.start();
     }//GEN-LAST:event_btnDeletrearActionPerformed
 
     /**
@@ -371,7 +372,15 @@ public class frmMain extends javax.swing.JFrame {
                 }
                 lblSprites.setText("");
             }else if(numLabel == 2){
-
+                np = lblNombre.getText();
+                for (int i = 0; i < np.length(); i++) {
+                    lblLetra.setText(Character.toString(np.charAt(i)));
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         }
     }
