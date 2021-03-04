@@ -72,6 +72,11 @@ public class frmMain extends javax.swing.JFrame {
             lblNombre.setText(miPokemon.getName());
             lblHeight.setText(String.valueOf(miPokemon.getHeight()) + " m");
             lblWeight.setText(String.valueOf(miPokemon.getWeight()) + " kg");
+            try {
+                    Thread.sleep(200);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+                }
             prueba.start();
             System.out.println("¡Datos del Pokémon descargados!");
             btnBuscar.setEnabled(true);
@@ -108,7 +113,6 @@ public class frmMain extends javax.swing.JFrame {
         }
         @Override
         public void run(){
-            Iniciar();
             try {
                 mostrarSprites();
             } catch (IOException ex) {
@@ -116,6 +120,7 @@ public class frmMain extends javax.swing.JFrame {
             } catch (InterruptedException ex) {
                 Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
+            Iniciar();
             while(loop == true){
                 lblSprites.setIcon(new ImageIcon(list.get(cont)));
                 cont++;
@@ -126,11 +131,6 @@ public class frmMain extends javax.swing.JFrame {
                 }
                 if (cont > 3){
                     cont = 0;
-                }
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -278,6 +278,7 @@ public class frmMain extends javax.swing.JFrame {
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         Hilo bpokemon = new Hilo(1);
+        Pausar();
         bpokemon.start();
     }//GEN-LAST:event_btnBuscarActionPerformed
 
