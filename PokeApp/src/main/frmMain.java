@@ -277,7 +277,6 @@ public class frmMain extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        Pausar();
         Hilo bpokemon = new Hilo(1);
         bpokemon.start();
     }//GEN-LAST:event_btnBuscarActionPerformed
@@ -355,28 +354,27 @@ public class frmMain extends javax.swing.JFrame {
     public class Hilo extends Thread{
         int numLabel = 0;
         boolean pokemon = true;
+        String np;
         public Hilo(int num){
             this.numLabel = num;
         }
-
-   
+        
     @Override
-        public void run(){
+        public void run(){  
             if (numLabel == 1) {
-              
-                    dexter = new Pokedex(txtNombre.getText());
-                    try {
-                        dexter.buscarPokemon();
-                    } catch (IOException | InterruptedException ex) {
-                        Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    lblSprites.setText("");
-                
+                dexter = new Pokedex(txtNombre.getText());
+                try {
+                    dexter.buscarPokemon();
+                } catch (IOException | InterruptedException ex) {
+                    Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                lblSprites.setText("");
             }else if(numLabel == 2){
 
             }
         }
     }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
