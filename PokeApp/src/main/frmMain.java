@@ -185,7 +185,7 @@ public class frmMain extends javax.swing.JFrame {
 
         lblSprites.setText("Pokémon no encontrado");
         jPanel1.add(lblSprites);
-        lblSprites.setBounds(130, 190, 117, 90);
+        lblSprites.setBounds(130, 190, 132, 90);
 
         lblNombre.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         lblNombre.setText("????");
@@ -199,11 +199,11 @@ public class frmMain extends javax.swing.JFrame {
 
         lblHeight.setText("?? m");
         jPanel1.add(lblHeight);
-        lblHeight.setBounds(480, 240, 90, 14);
+        lblHeight.setBounds(480, 240, 90, 16);
 
         lblWeight.setText("?? kg");
         jPanel1.add(lblWeight);
-        lblWeight.setBounds(580, 240, 100, 14);
+        lblWeight.setBounds(580, 240, 100, 16);
 
         btnDeletrear.setText("Deletrear Pokémon");
         btnDeletrear.addActionListener(new java.awt.event.ActionListener() {
@@ -217,7 +217,7 @@ public class frmMain extends javax.swing.JFrame {
         lblLetra.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         lblLetra.setText("?");
         jPanel1.add(lblLetra);
-        lblLetra.setBounds(130, 460, 20, 30);
+        lblLetra.setBounds(130, 460, 30, 30);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Pokedex.jpg"))); // NOI18N
         jPanel1.add(jLabel2);
