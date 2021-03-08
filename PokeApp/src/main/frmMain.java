@@ -30,6 +30,7 @@ public class frmMain extends javax.swing.JFrame {
     Pokedex dexter; // objeto que hará uso de la conexión a la API
     Pokemon miPokemon; // objeto de la clase que hace match con los datos de la API
     Reloj reloj = new Reloj(); // objeto para la hora del sistema. ¡No modificar!
+    Viewer visor = new Viewer(); // objeto que mostrará los sprites
     
     /**
      * Creates new form frmMain
@@ -37,11 +38,12 @@ public class frmMain extends javax.swing.JFrame {
     public frmMain() {
         initComponents();
         reloj.start(); // objeto iniciado para la hora del sistema. ¡No modificar!
+        visor.start(); // objeto iniciado para mostrar los sprites del pokemon buscado
         btnDeletrear.setEnabled(false);
     }
     
     // clase que conecta a la API y obtiene los datos del pokémon buscado
-    public class Pokedex {
+    public class Pokedex extends Thread {
         private static final String POKEMON_API_URL = "https://pokeapi.co/api/v2/pokemon/";
         private final String nombrePokemon;
     
@@ -49,6 +51,15 @@ public class frmMain extends javax.swing.JFrame {
             nombrePokemon = pokemonABuscar;
         }
         
+        @Override
+        public void run() {
+            try {
+                buscarPokemon();
+            } catch (IOException | InterruptedException ex) {
+                Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    
         public void buscarPokemon() throws IOException, InterruptedException{
             btnBuscar.setEnabled(false);
             txtNombre.setEnabled(false);
@@ -78,7 +89,25 @@ public class frmMain extends javax.swing.JFrame {
     }
     
     // clase que mostrará los 4 sprites del pokémon
-    public class Viewer {
+    public class Viewer extends Thread {
+        @Override
+        public void run() {
+            while (miPokemon == null) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Viewer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            while (true) {
+                try {
+                    mostrarSprites();
+                } catch (IOException | InterruptedException ex) {
+                    Logger.getLogger(Viewer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
         public void mostrarSprites() throws MalformedURLException, IOException, InterruptedException{
             // obtengo la url del listado de cada uno de los sprites que me dio la API
             URL url = new URL(miPokemon.getSprites().get("front_default").toString());
@@ -105,7 +134,26 @@ public class frmMain extends javax.swing.JFrame {
     }
     
     // clase para deletrear el nombre del pokemon
-    //<Inserte su código aquí>
+    public class Bee extends Thread {
+        @Override
+        public void run() {
+            dividirNombre();
+        }
+        
+        public void dividirNombre() {
+            btnDeletrear.setEnabled(false);
+            for (char ch: miPokemon.getName().toCharArray()) {
+                lblLetra.setText(String.valueOf(ch));
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            lblLetra.setText("");
+            btnDeletrear.setEnabled(true);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -132,6 +180,7 @@ public class frmMain extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
+        chboxHilos = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -202,6 +251,8 @@ public class frmMain extends javax.swing.JFrame {
             }
         });
 
+        chboxHilos.setText("Con hilos");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -215,7 +266,9 @@ public class frmMain extends javax.swing.JFrame {
                 .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnBuscar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 142, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chboxHilos)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
                 .addComponent(lblHH)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblMM)
@@ -235,7 +288,8 @@ public class frmMain extends javax.swing.JFrame {
                     .addComponent(lblSS)
                     .addComponent(jLabel3)
                     .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscar))
+                    .addComponent(btnBuscar)
+                    .addComponent(chboxHilos))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
                 .addContainerGap())
@@ -246,10 +300,14 @@ public class frmMain extends javax.swing.JFrame {
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         dexter = new Pokedex(txtNombre.getText());
-        try {
-            dexter.buscarPokemon();
-        } catch (IOException | InterruptedException ex) {
-            Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+        if (chboxHilos.isSelected())
+            dexter.start();
+        else {
+            try {
+                dexter.buscarPokemon();
+            } catch (IOException | InterruptedException ex) {
+                Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         lblSprites.setText("");
     }//GEN-LAST:event_btnBuscarActionPerformed
@@ -259,7 +317,11 @@ public class frmMain extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void btnDeletrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletrearActionPerformed
-        //
+        Bee deletreador = new Bee();
+        if (chboxHilos.isSelected())
+            deletreador.start();
+        else
+            deletreador.dividirNombre();
     }//GEN-LAST:event_btnDeletrearActionPerformed
 
     /**
@@ -328,6 +390,7 @@ public class frmMain extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnDeletrear;
+    private javax.swing.JCheckBox chboxHilos;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
